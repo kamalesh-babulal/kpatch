@@ -1,7 +1,20 @@
 language: c
+dist: bionic
+arch:
+  - amd64
+  - ppc64le
+
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libelf-dev linux-headers-$(uname -r) shellcheck elfutils
+  - sudo apt-get install -y gcc-$(gcc --version|head -1|awk '{print $4}'|cut -d "." -f1)-plugin-dev
+
+matrix:
+  include:
+    - os: linux
+      arch: amd64
+    - os: linux
+      arch: ppc64le
 
 script:
   - make
