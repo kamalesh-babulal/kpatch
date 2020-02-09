@@ -4,6 +4,8 @@ dist: bionic
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libelf-dev linux-headers-$(uname -r) shellcheck elfutils
+  - sudo apt-get install -y software-properties-common
+  - sudo add-apt-repository -y -u ppa:ubuntu-toolchain-r/test
   - sudo apt-get install -y gcc-6 gcc-6-plugin-dev g++-6
   - sudo apt-get install -y gcc-7 gcc-7-plugin-dev g++-7
   - sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8
