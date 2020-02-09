@@ -6,14 +6,17 @@ before_install:
   - sudo apt-get install -y libelf-dev linux-headers-$(uname -r) shellcheck elfutils
   - sudo apt-get install -y software-properties-common
   - sudo add-apt-repository -y -u ppa:ubuntu-toolchain-r/test
+  - sudo apt-get install -y gcc-5 gcc-5-plugin-dev g++-5
   - sudo apt-get install -y gcc-6 gcc-6-plugin-dev g++-6
   - sudo apt-get install -y gcc-7 gcc-7-plugin-dev g++-7
   - sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8
   - sudo apt-get install -y gcc-9 gcc-9-plugin-dev g++-9
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 100
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 200
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 300
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 400
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 100
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 200
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 300
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 400
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 500
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 100
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 100
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 200
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 300
@@ -30,9 +33,16 @@ matrix:
       dist: bionic
 
 script:
+  - sudo update-alternatives --set gcc "/usr/bin/gcc-5"
+  - sudo update-alternatives --set g++ "/usr/bin/g++-5"
+  - gcc --version
+  - make clean
+  - make
+  - make unit
+  - make check
+  - sudo make install
   - sudo update-alternatives --set gcc "/usr/bin/gcc-6"
   - sudo update-alternatives --set g++ "/usr/bin/g++-6"
-  - sudo update-alternatives --set g++ "/usr/bin/g++-
   - gcc --version
   - make clean
   - make
