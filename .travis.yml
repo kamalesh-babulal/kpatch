@@ -1,12 +1,19 @@
 language: c
+dist: bionic
 
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libelf-dev linux-headers-$(uname -r) shellcheck elfutils
-  - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8; fi
-  - sudo apt-get install -y gcc-$(gcc --version|head -1|awk '{print $4}'|cut -d "." -f1)-plugin-dev
-  - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7; fi
-  - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8; fi
+  - sudo apt-get install -y gcc-6 gcc-6-plugin-dev g++-6
+  - sudo apt-get install -y gcc-7 gcc-7-plugin-dev g++-7
+  - sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8
+  - sudo apt-get install -y gcc-9 gcc-9-plugin-dev g++-9
+  - sudo apt-get install -y gcc-10 gcc-10-plugin-dev g++-10
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 100 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 200 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 300 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 400 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 500 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 
 
 matrix:
@@ -17,14 +24,39 @@ matrix:
     - arch: ppc64le
       os: linux
       dist: bionic
-    - arch: ppc64le
-      os: linux
-      dist: xenial
-    - arch: ppc64le
-      os: linux
-      dist: trusty
 
 script:
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 700 --slave /usr/bin/g++ g++ /usr/bin/g++-6
+  - gcc --version
+  - make clean
+  - make
+  - make unit
+  - make check
+  - sudo make install
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+  - gcc --version
+  - make clean
+  - make
+  - make unit
+  - make check
+  - sudo make install
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 700 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+  - gcc --version
+  - make clean
+  - make
+  - make unit
+  - make check
+  - sudo make install
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 700 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - gcc --version
+  - make clean
+  - make
+  - make unit
+  - make check
+  - sudo make install
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 700 --slave /usr/bin/g++ g++ /usr/bin/g++-10
+  - gcc --version
+  - make clean
   - make
   - make unit
   - make check
