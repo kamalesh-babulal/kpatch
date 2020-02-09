@@ -10,12 +10,10 @@ before_install:
   - sudo apt-get install -y gcc-7 gcc-7-plugin-dev g++-7
   - sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8
   - sudo apt-get install -y gcc-9 gcc-9-plugin-dev g++-9
-  - sudo apt-get install -y gcc-10 gcc-10-plugin-dev g++-10
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 100 --slave /usr/bin/g++ g++ /usr/bin/g++-6
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 200 --slave /usr/bin/g++ g++ /usr/bin/g++-7
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 300 --slave /usr/bin/g++ g++ /usr/bin/g++-8
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 400 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 500 --slave /usr/bin/g++ g++ /usr/bin/g++-10
 
 
 matrix:
@@ -50,13 +48,6 @@ script:
   - make check
   - sudo make install
   - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 700 --slave /usr/bin/g++ g++ /usr/bin/g++-9
-  - gcc --version
-  - make clean
-  - make
-  - make unit
-  - make check
-  - sudo make install
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-10 700 --slave /usr/bin/g++ g++ /usr/bin/g++-10
   - gcc --version
   - make clean
   - make
