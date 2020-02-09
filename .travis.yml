@@ -9,7 +9,7 @@ dist:
 before_install:
   - sudo apt-get -qq update
   - sudo apt-get install -y libelf-dev linux-headers-$(uname -r) shellcheck elfutils
-  - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo apt-get install -y gcc-8 gcc-8-plugin-dev; fi
+  - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8; fi
   - sudo apt-get install -y gcc-$(gcc --version|head -1|awk '{print $4}'|cut -d "." -f1)-plugin-dev
   - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 700 --slave /usr/bin/g++ g++ /usr/bin/g++-7; fi
   - if [ "$TRAVIS_DIST" = "bionic" ]; then sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 800 --slave /usr/bin/g++ g++ /usr/bin/g++-8; fi
