@@ -40,7 +40,7 @@ struct kpatch_patch_dynrela {
 	char *name;
 	char *objname;
 	int external;
-	long addend;
+	int addend;
 };
 
 struct kpatch_pre_patch_callback {

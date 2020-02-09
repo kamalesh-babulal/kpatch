@@ -142,7 +142,7 @@ int offset_of_string(struct list_head *list, char *name)
 	list_for_each_entry(string, list, list) {
 		if (!strcmp(string->name, name))
 			return index;
-		index += (int)strlen(string->name) + 1;
+		index += strlen(string->name) + 1;
 	}
 
 	/* allocate a new string */
@@ -165,7 +165,7 @@ void kpatch_create_rela_list(struct kpatch_elf *kelf, struct section *sec)
 	/* create reverse link from base section to this rela section */
 	sec->base->rela = sec;
 
-	rela_nr = (int)(sec->sh.sh_size / sec->sh.sh_entsize);
+	rela_nr = sec->sh.sh_size / sec->sh.sh_entsize;
 
 	log_debug("\n=== rela list for %s (%d entries) ===\n",
 		sec->base->name, rela_nr);
@@ -185,8 +185,8 @@ void kpatch_create_rela_list(struct kpatch_elf *kelf, struct section *sec)
 
 		rela->type = GELF_R_TYPE(rela->rela.r_info);
 		rela->addend = rela->rela.r_addend;
-		rela->offset = (unsigned int)rela->rela.r_offset;
-		symndx = (unsigned int)GELF_R_SYM(rela->rela.r_info);
+		rela->offset = rela->rela.r_offset;
+		symndx = GELF_R_SYM(rela->rela.r_info);
 		rela->sym = find_symbol_by_index(&kelf->symbols, symndx);
 		if (!rela->sym)
 			ERROR("could not find rela entry symbol\n");
@@ -247,7 +247,7 @@ void kpatch_create_section_list(struct kpatch_elf *kelf)
 		if (!sec->data)
 			ERROR("elf_getdata");
 
-		sec->index = (unsigned int)elf_ndxscn(scn);
+		sec->index = elf_ndxscn(scn);
 
 		log_debug("ndx %02d, data %p, size %zu, name %s\n",
 			sec->index, sec->data->d_buf, sec->data->d_size,
@@ -269,7 +269,7 @@ void kpatch_create_symbol_list(struct kpatch_elf *kelf)
 	if (!symtab)
 		ERROR("missing symbol table");
 
-	symbols_nr = (unsigned int)(symtab->sh.sh_size / symtab->sh.sh_entsize);
+	symbols_nr = symtab->sh.sh_size / symtab->sh.sh_entsize;
 
 	log_debug("\n=== symbol list (%d entries) ===\n", symbols_nr);
 
@@ -489,7 +489,7 @@ void kpatch_create_shstrtab(struct kpatch_elf *kelf)
 	offset = 1;
 	list_for_each_entry(sec, &kelf->sections, list) {
 		len = strlen(sec->name) + 1;
-		sec->sh.sh_name = (unsigned int)offset;
+		sec->sh.sh_name = offset;
 		memcpy(buf + offset, sec->name, len);
 		offset += len;
 	}
@@ -542,7 +542,7 @@ void kpatch_create_strtab(struct kpatch_elf *kelf)
 			continue;
 		}
 		len = strlen(sym->name) + 1;
-		sym->sym.st_name = (unsigned int)offset;
+		sym->sym.st_name = offset;
 		memcpy(buf + offset, sym->name, len);
 		offset += len;
 	}
@@ -591,7 +591,7 @@ void kpatch_create_symtab(struct kpatch_elf *kelf)
 	offset = 0;
 	list_for_each_entry(sym, &kelf->symbols, list) {
 		memcpy(buf + offset, &sym->sym, symtab->sh.sh_entsize);
-		offset += (int)symtab->sh.sh_entsize;
+		offset += symtab->sh.sh_entsize;
 
 		if (is_local_sym(sym))
 			nr_local++;
@@ -715,7 +715,7 @@ void kpatch_reindex_elements(struct kpatch_elf *kelf)
 	list_for_each_entry(sym, &kelf->symbols, list) {
 		sym->index = index++;
 		if (sym->sec)
-			sym->sym.st_shndx = (unsigned short int)sym->sec->index;
+			sym->sym.st_shndx = sym->sec->index;
 		else if (sym->sym.st_shndx != SHN_ABS &&
 			 sym->sym.st_shndx != SHN_LIVEPATCH)
 			sym->sym.st_shndx = SHN_UNDEF;
@@ -725,8 +725,7 @@ void kpatch_reindex_elements(struct kpatch_elf *kelf)
 void kpatch_rebuild_rela_section_data(struct section *sec)
 {
 	struct rela *rela;
-	int nr = 0, index = 0;
-	size_t size;
+	int nr = 0, index = 0, size;
 	GElf_Rela *relas;
 
 	list_for_each_entry(rela, &sec->relas, list)
@@ -794,7 +793,7 @@ void kpatch_write_output_elf(struct kpatch_elf *kelf, Elf *elf, char *outfile)
 	if (!shstrtab)
 		ERROR("missing .shstrtab section");
 
-	ehout.e_shstrndx = (unsigned short int)shstrtab->index;
+	ehout.e_shstrndx = shstrtab->index;
 
 	/* add changed sections */
 	list_for_each_entry(sec, &kelf->sections, list) {

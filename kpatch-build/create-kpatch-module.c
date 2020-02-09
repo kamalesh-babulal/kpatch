@@ -50,13 +50,13 @@ static void create_dynamic_rela_sections(struct kpatch_elf *kelf, struct section
 
 	ksyms = ksymsec->data->d_buf;
 	krelas = krelasec->data->d_buf;
-	nr = (int)(krelasec->data->d_size / sizeof(*krelas));
+	nr = krelasec->data->d_size / sizeof(*krelas);
 
 	dynsec = create_section_pair(kelf, ".kpatch.dynrelas", sizeof(*dynrelas), nr);
 	dynrelas = dynsec->data->d_buf;
 
 	for (index = 0; index < nr; index++) {
-		offset = index * (unsigned int)sizeof(*krelas);
+		offset = index * sizeof(*krelas);
 
 		/*
 		 * To fill in each dynrela entry, find dest location,
@@ -69,28 +69,28 @@ static void create_dynamic_rela_sections(struct kpatch_elf *kelf, struct section
 		if (!rela)
 			ERROR("find_rela_by_offset");
 		sym = rela->sym;
-		dest_offset = (int)rela->addend;
+		dest_offset = rela->addend;
 
 		/* Get objname offset */
 		rela = find_rela_by_offset(krelasec->rela,
-			offset + (unsigned int)offsetof(struct kpatch_relocation, objname));
+					   offset + offsetof(struct kpatch_relocation, objname));
 		if (!rela)
 			ERROR("find_rela_by_offset");
-		objname_offset = (int)rela->addend;
+		objname_offset = rela->addend;
 
 		/* Get ksym (.kpatch.symbols entry) and symbol name offset */
 		rela = find_rela_by_offset(krelasec->rela,
-			offset + (unsigned int)offsetof(struct kpatch_relocation, ksym));
+					   offset + offsetof(struct kpatch_relocation, ksym));
 		if (!rela)
 			ERROR("find_rela_by_offset");
 		ksym = ksyms + (rela->addend / sizeof(*ksyms));
 
-		offset = index * (unsigned int)sizeof(*ksyms);
+		offset = index * sizeof(*ksyms);
 		rela = find_rela_by_offset(ksymsec->rela,
-				offset + (unsigned int)offsetof(struct kpatch_symbol, name));
+					   offset + offsetof(struct kpatch_symbol, name));
 		if (!rela)
 			ERROR("find_rela_by_offset");
-		name_offset = (int)rela->addend;
+		name_offset = rela->addend;
 
 		/* Fill in dynrela entry */
 		dynrelas[index].src = ksym->src;
@@ -104,23 +104,23 @@ static void create_dynamic_rela_sections(struct kpatch_elf *kelf, struct section
 		rela->sym = sym;
 		rela->type = R_X86_64_64;
 		rela->addend = dest_offset;
-		rela->offset = index * (unsigned int)sizeof(*dynrelas);
+		rela->offset = index * sizeof(*dynrelas);
 
 		/* name */
 		ALLOC_LINK(rela, &dynsec->rela->relas);
 		rela->sym = strsec->secsym;
 		rela->type = R_X86_64_64;
 		rela->addend = name_offset;
-		rela->offset = (unsigned int)(index * sizeof(*dynrelas) + \
-			       offsetof(struct kpatch_patch_dynrela, name));
+		rela->offset = index * sizeof(*dynrelas) + \
+			       offsetof(struct kpatch_patch_dynrela, name);
 
 		/* objname */
 		ALLOC_LINK(rela, &dynsec->rela->relas);
 		rela->sym = strsec->secsym;
 		rela->type = R_X86_64_64;
 		rela->addend = objname_offset;
-		rela->offset = (unsigned int)(index * sizeof(*dynrelas) + \
-			       offsetof(struct kpatch_patch_dynrela, objname));
+		rela->offset = index * sizeof(*dynrelas) + \
+			       offsetof(struct kpatch_patch_dynrela, objname);
 	}
 }
 
@@ -214,12 +214,12 @@ int main(int argc, char *argv[])
 	ksymsec = find_section_by_name(&kelf->sections, ".kpatch.symbols");
 	if (!ksymsec)
 		ERROR("missing .kpatch.symbols section");
-	ksyms_nr = (int)(ksymsec->data->d_size / sizeof(struct kpatch_symbol));
+	ksyms_nr = ksymsec->data->d_size / sizeof(struct kpatch_symbol);
 
 	krelasec = find_section_by_name(&kelf->sections, ".kpatch.relocations");
 	if (!krelasec)
 		ERROR("missing .kpatch.relocations section");
-	krelas_nr = (int)(krelasec->data->d_size / sizeof(struct kpatch_relocation));
+	krelas_nr = krelasec->data->d_size / sizeof(struct kpatch_relocation);
 
 	if (krelas_nr != ksyms_nr)
 		ERROR("number of krelas and ksyms do not match");
