@@ -1,10 +1,4 @@
 language: c
-arch:
-  - amd64
-  - ppc64le
-dist:
-  - bionic
-  - trusty
 
 before_install:
   - sudo apt-get -qq update
@@ -17,14 +11,17 @@ before_install:
 
 matrix:
   include:
-    - os: linux
-      arch: amd64
+    - arch: amd64
+      os: linux
       dist: bionic
-    - os: linux
-      arch: ppc64le
+    - arch: ppc64le
+      os: linux
       dist: bionic
-    - os: linux
-      arch: ppc64le
+    - arch: ppc64le
+      os: linux
+      dist: xenial
+    - arch: ppc64le
+      os: linux
       dist: trusty
 
 script:
