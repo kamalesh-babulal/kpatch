@@ -26,6 +26,8 @@ matrix:
       dist: bionic
 
 script:
+  - sudo update-alternatives --set gcc "/usr/bin/gcc-6"
+  - sudo update-alternatives --set g++ "/usr/bin/g++-6"
   - gcc --version
   - make clean
   - make
@@ -33,7 +35,7 @@ script:
   - make check
   - sudo make install
   - sudo update-alternatives --set gcc "/usr/bin/gcc-7"
-  - sudo update-alternatives --set gcc "/usr/bin/g++-7"
+  - sudo update-alternatives --set g++ "/usr/bin/g++-7"
   - gcc --version
   - make clean
   - make
@@ -41,7 +43,7 @@ script:
   - make check
   - sudo make install
   - sudo update-alternatives --set gcc "/usr/bin/gcc-8"
-  - sudo update-alternatives --set gcc "/usr/bin/g++-8"
+  - sudo update-alternatives --set g++ "/usr/bin/g++-8"
   - gcc --version
   - make clean
   - make
@@ -49,7 +51,7 @@ script:
   - make check
   - sudo make install
   - sudo update-alternatives --set gcc "/usr/bin/gcc-9"
-  - sudo update-alternatives --set gcc "/usr/bin/g++-9"
+  - sudo update-alternatives --set g++ "/usr/bin/g++-9"
   - gcc --version
   - make clean
   - make
