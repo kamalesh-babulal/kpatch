@@ -10,10 +10,14 @@ before_install:
   - sudo apt-get install -y gcc-7 gcc-7-plugin-dev g++-7
   - sudo apt-get install -y gcc-8 gcc-8-plugin-dev g++-8
   - sudo apt-get install -y gcc-9 gcc-9-plugin-dev g++-9
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 100 --slave /usr/bin/g++ g++ /usr/bin/g++-6
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 200 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 300 --slave /usr/bin/g++ g++ /usr/bin/g++-8
-  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 400 --slave /usr/bin/g++ g++ /usr/bin/g++-9
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-6 100
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 200
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 300
+  - sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-9 400
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-6 100
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-7 200
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-8 300
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-9 400
 
 
 matrix:
@@ -28,6 +32,7 @@ matrix:
 script:
   - sudo update-alternatives --set gcc "/usr/bin/gcc-6"
   - sudo update-alternatives --set g++ "/usr/bin/g++-6"
+  - sudo update-alternatives --set g++ "/usr/bin/g++-
   - gcc --version
   - make clean
   - make
