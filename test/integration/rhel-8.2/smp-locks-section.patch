@@ -1,0 +1,13 @@
+diff -Nupr src.orig/drivers/tty/tty_buffer.c src/drivers/tty/tty_buffer.c
+--- src.orig/drivers/tty/tty_buffer.c	2020-03-30 05:12:51.927555801 +0000
++++ src/drivers/tty/tty_buffer.c	2020-03-30 05:33:17.408484484 +0000
+@@ -256,6 +256,9 @@ static int __tty_buffer_request_room(str
+ 	struct tty_buffer *b, *n;
+ 	int left, change;
+ 
++	if (!size)
++		printk("kpatch-test: testing .smp_locks section changes\n");
++
+ 	b = buf->tail;
+ 	if (b->flags & TTYB_NORMAL)
+ 		left = 2 * b->size - b->used;
