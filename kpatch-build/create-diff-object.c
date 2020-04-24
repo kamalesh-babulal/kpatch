@@ -3515,7 +3515,7 @@ static void kpatch_no_sibling_calls_ppc64le(struct kpatch_elf *kelf)
 		if (sym->type != STT_FUNC || sym->status != CHANGED)
 			continue;
 
-		for (offset = 0; offset < sym->sec->data->d_size; offset += 4) {
+		for (offset = sym->sym.st_value ; offset < sym->sec->data->d_size; offset += 4) {
 
 			insn = *(unsigned int *)(sym->sec->data->d_buf + offset);
 
@@ -3540,7 +3540,7 @@ static void kpatch_no_sibling_calls_ppc64le(struct kpatch_elf *kelf)
 				continue;
 
 			ERROR("Found an unsupported sibling call at %s()+0x%lx.  Add __attribute__((optimize(\"-fno-optimize-sibling-calls\"))) to %s() definition.",
-			      sym->name, sym->sym.st_value + offset, sym->name);
+			      sym->name, offset - sym->sym.st_value, sym->name);
 		}
 	}
 #endif
